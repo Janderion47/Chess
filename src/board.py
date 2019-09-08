@@ -83,27 +83,12 @@ class Board:
     def __init__(self):
         logging.debug("Setting up board")
         self.game_board = []
-        
-        color_w = (255,255,255)
-        color_b = (0,0,0)
-        
+
         for row in range(8):
             self.game_board.append([])
-            
-            # determine color offset
-            if row%2 == 0:
-                color = color_w
-            else:
-                color = color_b
-                
             for column in range(8):
-                self.game_board[row].append(Square(row, column, color))  # generates a 2-dimensional list of square objects
-                # use different color than last one
-                if color == color_w:
-                    color = color_b
-                else:
-                    color = color_w
-                    
+                self.game_board[row].append(Square(row, column))  # generates a 2-dimensional list of square objects
+
         self.turn = WHITE
     
     # These methods will help with getting and setting the pieces
@@ -117,8 +102,9 @@ class Board:
         # Make sure you are using a monospace font
         result = ""
         if self.turn == WHITE:
-            board = self.game_board
-            indices = range(8, 0, -1)
+            board = reversed(self.game_board)
+            indices = range (8, 0, -1)
+    
         elif self.turn == BLACK:
             board = self.mirror()
             indices = range(1, 9)
@@ -132,10 +118,10 @@ class Board:
             result += "  |  a    b    c    d    e    f    g    h\n"
         else:
             result += "  |  h    g    f    e    d    c    b    a\n"
-
+            
         return result
     
-    def mirror(self) -> [[str]]:
+    def mirror(self) -> [[str]]: 
         """
         Returns a copy of the board flipped 180 degrees.
         Returns a list of lists of strings
@@ -143,7 +129,7 @@ class Board:
 
         logging.debug("Flipping the board")
         # Make sure we don't change the actual board
-        board = self.game_board.copy()
+        board = reversed(self.game_board.copy())
 
         # First flatten the list
         flat = []
@@ -266,13 +252,13 @@ class Board:
             return None  # cannot determine move
         origin = matches.group(1)  # origin
         origin = (
-            rows[int(origin[1]) - 1],  # get the row
+            int(origin[1]) - 1,  # get the row
             letter_to_index[origin[0]]  # get the column
             )
         
         destination = matches.group(2)
         destination = (
-            rows[int(destination[1]) - 1],
+            int(destination[1]) - 1, 
             letter_to_index[destination[0]]
             )
         
